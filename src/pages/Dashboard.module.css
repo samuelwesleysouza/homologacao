@@ -1,0 +1,25 @@
+/* Dashboard.module.css */
+
+.dashboardContainer {
+  flex-grow: 1;
+  width: 100%;
+  min-height: 100vh;
+  background: #f7f7f7;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.dashboardLayoutTitle {
+  margin-top: 32px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0f2f61;
+  text-align: center;
+}
+
+.dashboardLayoutSubtitle {
+  font-size: 1.1rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 32px;
+}

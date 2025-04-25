@@ -1,0 +1,29 @@
+/* Importação das principais fontes do Figma Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+@font-face {
+  font-family: 'Apercu';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://static.figma.com/blog/fonts/Apercu-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Apercu';
+  font-style: normal;
+  font-weight: 200;
+  src: url('https://static.figma.com/blog/fonts/Apercu-Light.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Apercu';
+  font-style: italic;
+  font-weight: 400;
+  src: url('https://static.figma.com/blog/fonts/Apercu-RegularItalic.woff2') format('woff2');
+}
+
+body, html {
+  font-family: 'Inter', 'Apercu', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #222;
+  background: #f7f7f7;
+}

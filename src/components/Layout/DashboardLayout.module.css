@@ -1,0 +1,96 @@
+/* DashboardLayout.module.css - estilos para o menu lateral (Drawer) */
+
+.drawerPaper {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  width: 280px;
+  border-right: none;
+  box-shadow: var(--box-shadow);
+  box-sizing: border-box;
+  overflow-x: hidden;
+  transition: width 0.3s;
+}
+
+.menuLogo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-sm) var(--spacing-lg);
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+.menuTitle {
+  color: var(--color-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-main);
+  letter-spacing: 1px;
+}
+
+.menuList {
+  padding: var(--spacing-lg) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 0;
+}
+
+.menuListItem {
+  border-radius: var(--border-radius);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
+  transition: background 0.2s;
+  min-height: 56px;
+  padding-left: 24px;
+  padding-right: 24px;
+  margin-bottom: 4px;
+}
+
+.menuListItemSelected {
+  background: rgba(245, 183, 31, 0.12);
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-bold);
+}
+
+.menuListItemIcon {
+  color: var(--color-primary);
+  min-width: 0;
+  margin-right: var(--spacing-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menuListItemIconSelected {
+  color: var(--color-secondary);
+}
+
+.menuListItemText {
+  color: var(--color-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+}
+
+.menuListItemTextSelected {
+  color: var(--color-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.menuFooter {
+  border-top: 1px solid rgba(245, 183, 31, 0.1);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  background: var(--color-surface);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}

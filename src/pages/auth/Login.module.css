@@ -1,0 +1,71 @@
+/* Login.module.css */
+.loginContainer {
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #fff;
+}
+
+.loginBox {
+  position: relative;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #f5b71f;
+  color: #0f2f61;
+  z-index: 2;
+}
+
+.logoBox {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.logoImage {
+  height: 60px;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.loginButton {
+  height: 48px;
+  background: #f5b71f;
+  color: #0f2f61;
+  font-weight: bold;
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+.loginButton:hover {
+  background: #ffd966;
+  color: #0f2f61;
+}
+
+.forgotLink {
+  color: #f5b71f;
+  text-decoration: none;
+}
+
+.forgotLink:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  margin: 24px 0;
+  border-color: #f5b71f;
+}
+
+.soliciteLink {
+  color: #f5b71f;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.soliciteLink:hover {
+  text-decoration: underline;
+}
