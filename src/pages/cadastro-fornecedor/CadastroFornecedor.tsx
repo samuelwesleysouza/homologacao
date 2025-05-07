@@ -35,8 +35,8 @@ import { DataGrid, GridColDef, GridRenderCellParams, GridColumnVisibilityModel }
 import axios from 'axios';
 
 import styles from './CadastroFornecedor.module.css';
-import DashboardHeader from './DashboardHeader';
-import FornecedorDashboardHeader from './FornecedorDashboardHeader';
+import GraficoEmpresasDonut from './GraficoEmpresasDonut';
+import GraficoEmpresasBar from './GraficoEmpresasBar';
 
 import { documentosObrigatorios, TipoFornecedor } from '../../config/documentosObrigatorios';
 import { exportGridToCSV } from '../../utils/exportCSV';
@@ -178,8 +178,6 @@ function gerarMockFornecedores(): Fornecedor[] {
     };
   });
 }
-
-const mockFornecedores: Fornecedor[] = gerarMockFornecedores();
 
 const CadastroFornecedor = () => {
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>(mockFornecedores);
@@ -328,35 +326,35 @@ const CadastroFornecedor = () => {
   const handleCloseHistorico = () => setOpenHistoricoModal(false);
 
   const columns: GridColDef[] = [
-    { field: 'codigo', headerName: 'Código', minWidth: 110, flex: 0.7, headerAlign: 'center', align: 'center' },
-    { field: 'cpfCnpj', headerName: 'CPF / CNPJ', minWidth: 140, flex: 1, headerAlign: 'center', align: 'center' },
-    { field: 'nomeFantasia', headerName: 'Nome/Fantasia', minWidth: 200, flex: 1.3, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'codigo', headerName: 'Código', width: 90, headerAlign: 'center', align: 'center', resizable: true },
+    { field: 'cpfCnpj', headerName: 'CPF / CNPJ', width: 130, headerAlign: 'center', align: 'center', resizable: true },
+    { field: 'nomeFantasia', headerName: 'Nome/Fantasia', width: 220, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <span style={{ display: 'block', width: '100%', textAlign: 'center' }}>{params.row.nomeFantasia || params.row.nome}</span>
     ) },
-    { field: 'tipoQualificacao', headerName: 'Tipo de Qualificação', minWidth: 170, flex: 1, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'tipoQualificacao', headerName: 'Tipo de Qualificação', width: 180, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <span style={{ display: 'block', width: '100%', textAlign: 'center' }}>{params.row.tipoQualificacao || '-'}</span>
     ) },
-    { field: 'dataUltimaOp', headerName: 'Data Última OP', minWidth: 140, flex: 1, headerAlign: 'center', align: 'center' },
-    { field: 'status', headerName: 'Status', minWidth: 140, flex: 1, headerAlign: 'center', align: 'center', renderCell: renderStatus },
-    { field: 'endereco', headerName: 'Endereço', minWidth: 120, flex: 1, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'dataUltimaOp', headerName: 'Data Última OP', width: 150, headerAlign: 'center', align: 'center', resizable: true },
+    { field: 'status', headerName: 'Status', width: 110, headerAlign: 'center', align: 'center', resizable: true, renderCell: renderStatus },
+    { field: 'endereco', headerName: 'Endereço', width: 90, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenEndereco(params.row)}><HomeIcon /></IconButton>
     ) },
-    { field: 'anexos', headerName: 'Anexos', minWidth: 100, flex: 0.8, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'anexos', headerName: 'Anexos', width: 90, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenDocumentos(params.row)}><AttachFileIcon /></IconButton>
     ) },
-    { field: 'editar', headerName: 'Editar', minWidth: 100, flex: 0.8, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'editar', headerName: 'Editar', width: 90, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <IconButton onClick={() => handleOpenDialog(params.row)} color="primary"><EditIcon /></IconButton>
     ) },
-    { field: 'contaBancaria', headerName: 'Conta Bancária', minWidth: 140, flex: 1, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'contaBancaria', headerName: 'Conta Bancária', width: 120, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenConta(params.row)}><AccountBalanceIcon /></IconButton>
     ) },
-    { field: 'qualificacao', headerName: 'Qualificação', minWidth: 120, flex: 1, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'qualificacao', headerName: 'Qualificação', width: 120, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenQualificacao(params.row)}><VerifiedUserIcon /></IconButton>
     ) },
-    { field: 'historico', headerName: 'Histórico', minWidth: 120, flex: 1, headerAlign: 'center', align: 'center', renderCell: (params) => (
+    { field: 'historico', headerName: 'Histórico', width: 100, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
       <Button variant="contained" color="info" size="small" onClick={() => handleOpenHistorico(params.row)}>Histórico</Button>
     ) },
-    { field: 'departamentoResponsavel', headerName: 'Departamento Responsável', minWidth: 170, flex: 1, headerAlign: 'center', align: 'center' },
+    { field: 'departamentoResponsavel', headerName: 'Departamento', width: 140, headerAlign: 'center', align: 'center', resizable: true },
   ];
 
   const getTipoFornecedor = (fornecedor: Fornecedor | null): TipoFornecedor => {
@@ -385,21 +383,101 @@ const CadastroFornecedor = () => {
   };
 
   return (
-    <div className={styles.cadastroContainer}>
-      <div className={styles.mainContent}>
-        <FornecedorDashboardHeader onNovoFornecedor={handleOpenDialog} />
-        <div className={styles.dataGridContainer}>
+    <div className={styles.container} style={{ zoom: '90%' }}>
+      <div className={styles.mainContent} style={{ width: '100%', padding: 0, margin: 0, zoom: '90%' }}>
+        {/* Header visual moderno sem gráfico */}
+        <Box sx={{
+          width: '100%',
+          background: '#fff',
+          borderRadius: 4,
+          p: { xs: 2, md: 4 },
+          mb: 3,
+          boxShadow: '0 4px 24px 0 rgba(32, 32, 32, 0.08)',
+          display: 'flex',
+          alignItems: { xs: 'flex-start', md: 'center' },
+          justifyContent: 'space-between',
+          margin: 0,
+          boxSizing: 'border-box',
+        }}>
+          <Box>
+            <Typography variant="h5" fontWeight={700} color="#0f2f61" sx={{ mb: 1 }}>
+              Cadastro de Fornecedores
+            </Typography>
+            <Typography variant="subtitle1" color="#7d8fa9" sx={{ mb: 2 }}>
+              Gerencie, qualifique e acompanhe todos os fornecedores da sua empresa de forma centralizada e eficiente.
+            </Typography>
+            <Typography variant="body2" color="#112a52">
+              Utilize o botão ao lado para cadastrar um novo fornecedor ou utilize a tabela abaixo para editar e visualizar informações.
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<AddIcon />}
+            onClick={() => handleOpenDialog()}
+            sx={{
+              marginBottom: 2,
+              backgroundColor: '#1976d2',
+              '&:hover': {
+                backgroundColor: '#1565c0'
+              }
+            }}
+          >
+            Novo Fornecedor
+          </Button>
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>Estatísticas de Fornecedores</Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <GraficoEmpresasDonut />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <GraficoEmpresasBar />
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Box sx={{
+           height: 'calc(100vh - 200px)',
+           width: '100%',
+           overflow: 'visible',
+           padding: 0,
+           margin: 0,
+           boxSizing: 'border-box',
+           position: 'relative'
+         }}>
           <DataGrid
             rows={fornecedores}
-            columns={columns.map(col => ({
-              ...col,
-              headerClassName: 'custom-header',
-            }))}
+            columns={columns}
             pagination
             pageSizeOptions={[10, 25, 50, 100]}
             initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
             autoHeight
             className={styles.dataGrid}
+            density="standard"
+            disableRowSelectionOnClick
+            disableColumnMenu
+            disableAutosize
+            disableColumnResize={false}
+            disableDensitySelector
+            // Configuração de visibilidade das colunas
+            // Para ocultar uma coluna, mude o valor para 'false'
+            // Para mostrar uma coluna, mude o valor para 'true'
+            columnVisibilityModel={{
+              codigo: true,
+              cpfCnpj: true,
+              nomeFantasia: true,
+              tipoQualificacao: true,
+              dataUltimaOp: true,
+              status: true,
+              endereco: true,
+              anexos: true,
+              editar: true,
+              contaBancaria: true,
+              qualificacao: true,
+              historico: true,
+              departamentoResponsavel: true
+            }}
             slotProps={{
               footer: { className: styles['centro-paginacao'] }
             }}
@@ -431,9 +509,70 @@ const CadastroFornecedor = () => {
                   backgroundColor: '#477abe',
                 },
               },
+              '& .MuiDataGrid-root': {
+                fontSize: '0.875rem',
+              },
+              '& .MuiDataGrid-row': {
+                '&:nth-of-type(odd)': {
+                  backgroundColor: '#f8fafd',
+                },
+                '&:hover': {
+                  backgroundColor: '#eef2f7',
+                },
+              },
+              '& .MuiDataGrid-columnHeaders': {
+                backgroundColor: '#f3f6fa',
+                color: '#0f2f61',
+                fontWeight: 600,
+                height: '52px',
+                borderBottom: '2px solid #e0e4e9',
+                '& .MuiDataGrid-columnHeaderTitleContainer': {
+                  padding: '0 12px'
+                }
+              },
+              '& .MuiDataGrid-cell': {
+                padding: '8px 12px',
+                borderBottom: '1px solid #eaeef2',
+                color: '#333',
+                '&:focus': {
+                  outline: 'none',
+                },
+                '&:focus-within': {
+                  outline: 'none',
+                }
+              },
+              '& .MuiDataGrid-columnSeparator': {
+                display: 'none'
+              },
+              '& .MuiDataGrid-main': {
+                border: '1px solid #eaeef2',
+                borderRadius: '8px',
+                overflow: 'hidden',
+                backgroundColor: '#fff',
+                '& .MuiDataGrid-virtualScroller': {
+                  backgroundColor: '#fff',
+                  scrollbarWidth: 'thin',
+                  '&::-webkit-scrollbar': {
+                    width: '8px',
+                    height: '8px',
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    backgroundColor: '#f5f5f5',
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: '#ddd',
+                    borderRadius: '4px',
+                  }
+                }
+              },
+              '& .MuiDataGrid-footerContainer': {
+                backgroundColor: '#fff',
+                borderTop: '1px solid #eaeef2',
+                minHeight: '52px'
+              }
             }}
           />
-        </div>
+        </Box>
         <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
           <form onSubmit={handleSave}>
             <DialogTitle sx={{ fontSize: '2rem', fontWeight: 800, py: 3, color: '#0f2f61', display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -653,14 +792,6 @@ const CadastroFornecedor = () => {
           enviados={docsEnviados}
           vencimentos={selectedFornecedor?.vencimentos || {}}
           fornecedor={selectedFornecedor}
-        />
-        <ModalQualificacaoFornecedor
-          open={openQualificacaoModal}
-          onClose={() => setOpenQualificacaoModal(false)}
-          fornecedor={selectedFornecedor}
-          tipo={selectedFornecedor?.tipoQualificacao as TipoFornecedor}
-          documentos={selectedFornecedor ? documentosObrigatorios[selectedFornecedor.tipoQualificacao as TipoFornecedor] : []}
-          enviados={docsEnviados}
         />
         <ModalQualificacaoFornecedor
           open={openQualificacaoModal}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Select, MenuItem, TextField, Table, TableHead, TableRow, TableCell, TableBody, Chip, Box } from '@mui/material';
-import { CheckCircle, HourglassEmpty, Block } from '@mui/icons-material';
+import { CheckCircle, HourglassEmpty, Block, CheckCircleOutline } from '@mui/icons-material';
 import { TipoFornecedor, DocumentoObrigatorio } from '../../config/documentosObrigatorios';
 
 interface ModalQualificacaoFornecedorProps {
@@ -68,13 +68,13 @@ const ModalQualificacaoFornecedor: React.FC<ModalQualificacaoFornecedorProps> = 
           sx={{ mb: 3 }}
           placeholder="Informe pendências, observações, etc."
         />
-        <Typography variant="subtitle1" sx={{ mt: 2, mb: 1, color: '#0f2f61' }}>Checklist de Documentos</Typography>
-        <Table size="small" sx={{ background: '#f7f7f7', borderRadius: 2 }}>
-          <TableHead>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>Checklist de Documentos</Typography>
+        <Table size="medium" sx={{ boxShadow: 'none' }}>
+          <TableHead sx={{ backgroundColor: '#e9ecf5' }}>
             <TableRow>
-              <TableCell>Nome</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Data de Vencimento</TableCell>
+              <TableCell sx={{ fontWeight: 600, color: '#333' }}>Nome</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333' }}>Status</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333' }}>Data de Vencimento</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -82,19 +82,41 @@ const ModalQualificacaoFornecedor: React.FC<ModalQualificacaoFornecedorProps> = 
               const enviado = enviados.includes(doc.nome);
               const vencimento = fornecedor?.vencimentos?.[doc.id];
               return (
-                <TableRow key={doc.id}>
-                  <TableCell>{doc.nome}</TableCell>
-                  <TableCell>
-                    <Chip
-                      label={enviado ? 'Enviado' : 'Pendente'}
-                      color={enviado ? 'success' : 'warning'}
-                      size="small"
-                      sx={{ fontWeight: 700, fontSize: 13, minWidth: 90 }}
-                    />
+                <TableRow key={doc.id} sx={{ 
+                  backgroundColor: idx % 2 === 0 ? '#e9ecf5' : 'white',
+                }}>
+                  <TableCell sx={{ py: 1.5 }}>{doc.nome}</TableCell>
+                  <TableCell align="center" sx={{ py: 1.5 }}>
+                    {enviado ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Box 
+                          sx={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#4CAF50',
+                            color: 'white',
+                            borderRadius: '50%',
+                            width: 24,
+                            height: 24,
+                            mr: 0.5
+                          }}
+                        >
+                          <CheckCircleOutline sx={{ fontSize: 16 }} />
+                        </Box>
+                        <Typography component="span" sx={{ color: '#4CAF50', fontWeight: 500 }}>
+                          Enviado
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <Typography component="span" sx={{ color: '#f5b71f', fontWeight: 500 }}>
+                        Pendente
+                      </Typography>
+                    )}
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="center" sx={{ py: 1.5 }}>
                     {doc.vencimentoObrigatorio ? (
-                      vencimento ? new Date(vencimento).toLocaleDateString('pt-BR') : <span style={{color:'#f5b71f'}}>Não informado</span>
+                      vencimento ? new Date(vencimento).toLocaleDateString('pt-BR') : '-'
                     ) : '-'}
                   </TableCell>
                 </TableRow>

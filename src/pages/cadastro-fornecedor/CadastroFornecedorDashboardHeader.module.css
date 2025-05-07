@@ -2,7 +2,7 @@
 .dashboardHeader {
   display: flex;
   gap: 32px;
-  margin-bottom: 24px;
+  margin-bottom: -44px;
   flex-wrap: wrap;
   justify-content: flex-start;
 }

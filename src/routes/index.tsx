@@ -3,6 +3,8 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from '../pages/auth/Login';
 import Dashboard from '../pages/dashboard/Dashboard';
 import CadastroFornecedor from '../pages/cadastro-fornecedor/CadastroFornecedor';
+import RelatoriosOperacionais from '../pages/cadastro-fornecedor/RelatoriosOperacionais';
+import BannerManagementPage from '../pages/banners/BannerManagementPage';
 import DashboardLayout from '../components/Layout/DashboardLayout';
 
 interface ProtectedRouteProps {
@@ -46,10 +48,18 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
-      <Route path="/cadastro-operacional" element={
+      <Route path="/banners" element={
         <ProtectedRoute>
           <DashboardLayout>
-            <div>Cadastro Operacional</div>
+            <BannerManagementPage />
+          </DashboardLayout>
+        </ProtectedRoute>
+      } />
+      
+      <Route path="/relatorios-operacionais" element={
+        <ProtectedRoute>
+          <DashboardLayout>
+            <RelatoriosOperacionais />
           </DashboardLayout>
         </ProtectedRoute>
       } />
@@ -62,21 +72,7 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       
-      <Route path="/dashboard-fornecedor" element={
-        <ProtectedRoute>
-          <DashboardLayout>
-            <div>Dashboard Fornecedor</div>
-          </DashboardLayout>
-        </ProtectedRoute>
-      } />
-      
-      <Route path="/relatorio-fornecedor" element={
-        <ProtectedRoute>
-          <DashboardLayout>
-            <div>Relatório Fornecedor</div>
-          </DashboardLayout>
-        </ProtectedRoute>
-      } />
+
 
       {/* Rota para qualquer caminho não encontrado */}
       <Route path="*" element={<Navigate to="/" replace />} />

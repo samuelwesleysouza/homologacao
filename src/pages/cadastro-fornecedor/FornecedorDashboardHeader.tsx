@@ -35,12 +35,12 @@ export default function FornecedorDashboardHeader({ onNovoFornecedor }: { onNovo
       sx={{
         width: "100%",
         display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        py: 3,
-        pl: { xs: 1, md: 4 },
+        justifyContent: 'center',
+        alignItems: 'center',
+        py: { xs: 2, md: 3 },
+        px: { xs: 1, md: 2 },
         background: 'linear-gradient(90deg, #f8fafc 0%, #e3e9f9 100%)',
-        minHeight: 220,
+        minHeight: 180,
         boxSizing: 'border-box',
       }}
     >
@@ -48,16 +48,16 @@ export default function FornecedorDashboardHeader({ onNovoFornecedor }: { onNovo
         elevation={3}
         sx={{
           width: '100%',
-          maxWidth: 1280,
+          maxWidth: 1400,
           borderRadius: 5,
-          p: 3,
+          p: { xs: 2, md: 4 },
           boxShadow: '0 4px 32px 0 rgba(31, 38, 135, 0.10)',
           background: '#fff',
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
           alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'space-between',
-          gap: 3,
+          gap: { xs: 2, md: 4 },
         }}
       >
         {/* Coluna 1: KPIs + botão */}

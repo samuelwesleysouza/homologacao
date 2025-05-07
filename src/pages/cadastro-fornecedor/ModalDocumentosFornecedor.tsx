@@ -1,6 +1,7 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, IconButton, Box, Chip, List, ListItem, ListItemText, Button, Typography } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, IconButton, Box, Chip, Button, Typography, Table, TableRow, TableCell, TableHead, TableBody, Paper } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { TipoFornecedor, DocumentoObrigatorio } from '../../config/documentosObrigatorios';
 
 interface ModalDocumentosFornecedorProps {
@@ -36,38 +37,81 @@ const ModalDocumentosFornecedor: React.FC<ModalDocumentosFornecedorProps> = ({ o
             </Box>
           </Box>
         )}
-        <List>
-          {documentos.map((doc) => {
-            const enviado = enviados.includes(doc.nome);
-            const vencimento = vencimentos[doc.id] || '';
-            return (
-              <ListItem key={doc.id} secondaryAction={
-                enviado && onVisualizar ? (
-                  <Button variant="outlined" size="small" onClick={() => onVisualizar(doc)}>
-                    Visualizar
-                  </Button>
-                ) : null
-              }>
-                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', gap: 2 }}>
-  <Typography variant="body2" sx={{ minWidth: 120, color: enviado ? '#38b73c' : '#f5b71f', fontWeight: enviado ? 700 : 400 }}>
-    {doc.nome}
-  </Typography>
-  {doc.vencimentoObrigatorio && (
-    <Typography variant="body2" sx={{ minWidth: 140, color: vencimento ? '#0f2f61' : '#f5b71f' }}>
-      Vencimento: {vencimento ? new Date(vencimento).toLocaleDateString('pt-BR') : 'Não informado'}
-    </Typography>
-  )}
-  <Chip label={enviado ? 'Enviado' : 'Pendente'} color={enviado ? 'success' : 'warning'} size="small" sx={{ mx: 1 }} />
-  {enviado && onVisualizar && (
-    <Button variant="outlined" size="small" onClick={() => onVisualizar(doc)}>
-      Visualizar
-    </Button>
-  )}
-</Box>
-              </ListItem>
-            );
-          })}
-        </List>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>Lista de Documentos</Typography>
+        <Table size="medium" sx={{ boxShadow: 'none' }}>
+          <TableHead sx={{ backgroundColor: '#e9ecf5' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 600, color: '#333' }}>Nome</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333' }}>Status</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333' }}>Data de Vencimento</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333' }}>Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {documentos.map((doc, idx) => {
+              const enviado = enviados.includes(doc.nome);
+              const vencimento = vencimentos[doc.id] || '';
+              return (
+                <TableRow key={doc.id} sx={{ 
+                  backgroundColor: idx % 2 === 0 ? '#e9ecf5' : 'white',
+                }}>
+                  <TableCell sx={{ py: 1.5 }}>{doc.nome}</TableCell>
+                  <TableCell align="center" sx={{ py: 1.5 }}>
+                    {enviado ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Box 
+                          sx={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#4CAF50',
+                            color: 'white',
+                            borderRadius: '50%',
+                            width: 24,
+                            height: 24,
+                            mr: 0.5
+                          }}
+                        >
+                          <CheckCircleIcon sx={{ fontSize: 16 }} />
+                        </Box>
+                        <Typography component="span" sx={{ color: '#4CAF50', fontWeight: 500 }}>
+                          Enviado
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <Typography component="span" sx={{ color: '#f5b71f', fontWeight: 500 }}>
+                        Pendente
+                      </Typography>
+                    )}
+                  </TableCell>
+                  <TableCell align="center" sx={{ py: 1.5 }}>
+                    {doc.vencimentoObrigatorio ? (
+                      vencimento ? new Date(vencimento).toLocaleDateString('pt-BR') : '-'
+                    ) : '-'}
+                  </TableCell>
+                  <TableCell align="center" sx={{ py: 1.5 }}>
+                    {enviado && onVisualizar && (
+                      <Button variant="outlined" size="small" onClick={() => onVisualizar(doc)}
+                        sx={{
+                          borderColor: '#0f2f61',
+                          color: '#0f2f61',
+                          borderRadius: 20,
+                          px: 2,
+                          '&:hover': {
+                            borderColor: '#477abe',
+                            color: '#477abe',
+                            backgroundColor: 'rgba(15, 47, 97, 0.04)'
+                          }
+                        }}>
+                        Visualizar
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
       </DialogContent>
     </Dialog>
   );

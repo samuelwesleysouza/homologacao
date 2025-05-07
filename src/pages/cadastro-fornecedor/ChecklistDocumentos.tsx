@@ -1,8 +1,18 @@
 import React from 'react';
-import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, Chip, Button, Checkbox, TextField } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
-import BlockIcon from '@mui/icons-material/Block';
+import { 
+  Box, 
+  Typography, 
+  Button, 
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid
+} from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { TipoFornecedor, DocumentoObrigatorio } from '../../config/documentosObrigatorios';
 import { getStatusDocumento } from '../../utils/documentos';
 
@@ -31,84 +41,87 @@ const ChecklistDocumentos: React.FC<ChecklistDocumentosProps> = ({ tipo, enviado
 
   return (
     <Box sx={{ mt: 2 }}>
-      <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>
-        Checklist de Documentos Obrigatórios - {tipo}
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
+        Checklist de Documentos
       </Typography>
-      <List>
-        {documentos.map((doc) => {
-          const enviado = enviadosLocal.includes(doc.nome);
-          const exigeVencimento = doc.vencimentoObrigatorio;
-          const vencimento = vencimentosLocal[doc.id] || '';
-          let statusVenc = 'VALIDO';
-          if (exigeVencimento) {
-            statusVenc = getStatusDocumento(vencimento, doc.lembreteDias ?? 3);
-          }
-          return (
-            <ListItem key={doc.id}>
-              <ListItemIcon>
-                {statusVenc === 'VENCIDO' ? <BlockIcon sx={{ color: '#d32f2f' }} /> :
-                 statusVenc === 'A_VENCER' ? <HourglassEmptyIcon sx={{ color: '#f5b71f' }} /> :
-                 enviado ? <CheckCircleIcon sx={{ color: '#38b73c' }} /> : <HourglassEmptyIcon sx={{ color: '#f5b71f' }} />}
-              </ListItemIcon>
-              <ListItemText
-                primary={doc.nome}
-                primaryTypographyProps={{
-                  style: { color: statusVenc === 'VENCIDO' ? '#d32f2f' : statusVenc === 'A_VENCER' ? '#f5b71f' : enviado ? '#38b73c' : '#f5b71f', fontWeight: enviado ? 700 : 400 }
-                }}
-              />
-              {exigeVencimento && (
-                <TextField
-                  type="date"
-                  size="small"
-                  label="Vencimento"
-                  value={vencimento}
-                  onChange={e => handleVencimentoChange(doc.id, e.target.value)}
-                  sx={{ ml: 2, minWidth: 140 }}
-                  InputLabelProps={{ shrink: true }}
-                  inputProps={{ maxLength: 10 }}
-                />
-              )}
-              {!enviado && statusVenc !== 'VENCIDO' && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  component="label"
-                  sx={{ ml: 2 }}
+      
+      <TableContainer component={Paper} sx={{ boxShadow: 'none', borderRadius: '4px', overflow: 'hidden' }}>
+        <Table size="medium" aria-label="checklist de documentos">
+          <TableHead sx={{ backgroundColor: '#e9ecf5' }}>
+            <TableRow>
+              <TableCell sx={{ fontWeight: 600, color: '#333', py: 2 }}>Nome</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333', py: 2 }}>Status</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333', py: 2 }}>Data de Vencimento</TableCell>
+              <TableCell align="center" sx={{ fontWeight: 600, color: '#333', py: 2 }}>Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {documentos.map((doc, index) => {
+              const enviado = enviadosLocal.includes(doc.nome);
+              const exigeVencimento = doc.vencimentoObrigatorio;
+              const vencimento = vencimentosLocal[doc.id] || '';
+              // Garantindo que as linhas alternem corretamente
+              return (
+                <TableRow 
+                  key={doc.id} 
+                  sx={{ 
+                    backgroundColor: index % 2 === 0 ? '#e9ecf5' : 'white',
+                    '&:last-child td, &:last-child th': { border: 0 }
+                  }}
                 >
-                  Upload
-                  <input
-                    type="file"
-                    hidden
-                    onChange={(e) => handleUpload(doc.nome, e)}
-                  />
-                </Button>
-              )}
-              <Button
-                variant="outlined"
-                color={statusVenc === 'VENCIDO' ? 'error' : statusVenc === 'A_VENCER' ? 'warning' : enviado ? 'success' : 'warning'}
-                size="small"
-                sx={{ ml: 2 }}
-                onClick={() => setModalDoc({doc, enviado})}
-              >
-                {statusVenc === 'VENCIDO' ? 'Vencido' : statusVenc === 'A_VENCER' ? 'A Vencer' : enviado ? 'Visualizar' : 'Detalhes'}
-              </Button>
-              {statusVenc === 'VENCIDO' && (
-                <Chip label="Vencido" color="error" size="small" sx={{ ml: 2 }} />
-              )}
-              {statusVenc === 'A_VENCER' && (
-                <Chip label="A vencer" color="warning" size="small" sx={{ ml: 2 }} />
-              )}
-              {statusVenc === 'VALIDO' && enviado && (
-                <Chip label="Enviado" color="success" size="small" sx={{ ml: 2 }} />
-              )}
-              {statusVenc === 'VALIDO' && !enviado && (
-                <Chip label="Pendente" color="warning" size="small" sx={{ ml: 2 }} />
-              )}
-            </ListItem>
-          );
-        })}
-      </List>
+                  <TableCell component="th" scope="row" sx={{ py: 2 }}>
+                    {doc.nome}
+                  </TableCell>
+                  <TableCell align="center" sx={{ py: 2 }}>
+                    {enviado && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Box 
+                          sx={{ 
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#4CAF50',
+                            color: 'white',
+                            borderRadius: '50%',
+                            width: 24,
+                            height: 24,
+                            mr: 0.5
+                          }}
+                        >
+                          <CheckCircleOutlineIcon sx={{ fontSize: 16 }} />
+                        </Box>
+                        <Typography component="span" sx={{ color: '#4CAF50', fontWeight: 500, fontSize: '0.875rem' }}>
+                          Enviado
+                        </Typography>
+                      </Box>
+                    )}
+                  </TableCell>
+                  <TableCell align="center" sx={{ py: 2 }}>
+                    {exigeVencimento ? vencimento : "-"}
+                  </TableCell>
+                  <TableCell align="center" sx={{ py: 2 }}>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{ 
+                        borderColor: '#0f2f61',
+                        color: '#0f2f61',
+                        borderRadius: '20px',
+                        minWidth: '100px',
+                        textTransform: 'none',
+                        py: 0.5
+                      }}
+                      onClick={() => setModalDoc({doc, enviado})}
+                    >
+                      Visualizar
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
       {/* Modal de detalhes do documento */}
       {modalDoc && (
         <Box sx={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', bgcolor: 'rgba(0,0,0,0.25)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -119,10 +132,19 @@ const ChecklistDocumentos: React.FC<ChecklistDocumentosProps> = ({ tipo, enviado
             </Typography>
             {modalDoc.doc.vencimentoObrigatorio && (
               <Typography variant="body2" sx={{ mb: 2 }}>
-                Vencimento: {vencimentosLocal[modalDoc.doc.id] ? new Date(vencimentosLocal[modalDoc.doc.id]).toLocaleDateString('pt-BR') : 'Não informado'}
+                Vencimento: {modalDoc.doc.id && vencimentosLocal[modalDoc.doc.id] ? new Date(vencimentosLocal[modalDoc.doc.id]).toLocaleDateString('pt-BR') : 'Não informado'}
               </Typography>
             )}
-            <Button variant="contained" color="primary" fullWidth onClick={() => setModalDoc(null)}>
+            <Button 
+              variant="contained" 
+              sx={{ 
+                bgcolor: '#0f2f61',
+                '&:hover': { bgcolor: '#477abe' },
+                textTransform: 'none'
+              }}
+              fullWidth
+              onClick={() => setModalDoc(null)}
+            >
               Fechar
             </Button>
           </Box>
