@@ -20,6 +20,10 @@ import {
   Paper,
   Grid,
   Checkbox,
+  Badge,
+  Tabs,
+  Tab,
+  Popover,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -47,6 +51,13 @@ import {
   MonetizationOn as MonetizationOnIcon,
   BarChart as BarChartIcon,
   Receipt as ReceiptIcon,
+  Notifications as NotificationsIcon,
+  Error as ErrorIcon,
+  Warning as WarningIcon,
+  Info as InfoIcon,
+  CheckCircleOutline as CheckCircleOutlineIcon,
+  AccessTime as AccessTimeIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -100,6 +111,18 @@ const getSelectedModuleByPath = (path: string) => {
   return menuItems.find(item => item.path === path) || menuItems[0];
 };
 
+// Tipos de notificações
+type NotificationType = 'success' | 'system' | 'info' | 'warning' | 'error';
+
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  type: NotificationType;
+  date: Date;
+  read: boolean;
+}
+
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [open, setOpen] = useState(true);
   const navigate = useNavigate();
@@ -109,6 +132,52 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [todoExpanded, setTodoExpanded] = useState(true);
+  const [notificationsAnchorEl, setNotificationsAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [notificationTabValue, setNotificationTabValue] = useState(0);
+  
+  // Mock de notificações
+  const [notifications, setNotifications] = useState<Notification[]>([
+    { 
+      id: 1, 
+      title: 'Título da notificação de sucesso', 
+      message: 'Corpo da notificação em texto corrido com até duas linhas de visualização...', 
+      type: 'success', 
+      date: new Date(), 
+      read: false 
+    },
+    { 
+      id: 2, 
+      title: 'Título da notificação do sistema', 
+      message: 'Corpo da notificação em texto corrido com até duas linhas de visualização...', 
+      type: 'system', 
+      date: new Date(), 
+      read: false 
+    },
+    { 
+      id: 3, 
+      title: 'Título da notificação informacional', 
+      message: 'Corpo da notificação em texto corrido com até duas linhas de visualização...', 
+      type: 'info', 
+      date: new Date(Date.now() - 24 * 60 * 60 * 1000), // ontem
+      read: true 
+    },
+    { 
+      id: 4, 
+      title: 'Título da notificação de alerta', 
+      message: 'Corpo da notificação em texto corrido com até duas linhas de visualização...', 
+      type: 'warning', 
+      date: new Date(Date.now() - 24 * 60 * 60 * 1000), // ontem
+      read: false 
+    },
+    { 
+      id: 5, 
+      title: 'Título da notificação destrutiva', 
+      message: 'Corpo da notificação em texto corrido com até duas linhas de visualização...', 
+      type: 'error', 
+      date: new Date(Date.now() - 24 * 60 * 60 * 1000), // ontem
+      read: false 
+    },
+  ]);
   
   // Mock de tarefas pendentes
   const [todos, setTodos] = useState([
@@ -157,6 +226,50 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       todo.id === id ? { ...todo, completed: !todo.completed } : todo
     ));
   };
+
+  // Gerenciamento de notificações
+  const handleNotificationsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setNotificationsAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationsClose = () => {
+    setNotificationsAnchorEl(null);
+  };
+
+  const handleNotificationTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setNotificationTabValue(newValue);
+  };
+
+  const markNotificationAsRead = (id: number) => {
+    setNotifications(notifications.map(notification => 
+      notification.id === id ? { ...notification, read: true } : notification
+    ));
+  };
+
+  const deleteNotification = (id: number) => {
+    setNotifications(notifications.filter(notification => notification.id !== id));
+  };
+
+  const notificationsOpen = Boolean(notificationsAnchorEl);
+  const unreadNotificationsCount = notifications.filter(notification => !notification.read).length;
+  
+  // Agrupar notificações por data
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const todayNotifications = notifications.filter(notification => {
+    const notifDate = new Date(notification.date);
+    notifDate.setHours(0, 0, 0, 0);
+    return notifDate.getTime() === today.getTime();
+  });
+
+  const yesterdayNotifications = notifications.filter(notification => {
+    const notifDate = new Date(notification.date);
+    notifDate.setHours(0, 0, 0, 0);
+    return notifDate.getTime() === yesterday.getTime();
+  });
   
   // Filtrar módulos com base na pesquisa
   const filteredModules = allModules.filter(module => 
@@ -174,11 +287,223 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           sx={{
             width: { sm: `calc(100% - ${drawerWidth}px)` },
             ml: { sm: `${drawerWidth}px` },
-            backgroundColor: 'transparent',
-            boxShadow: 'none',
+            backgroundColor: 'white',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
+            color: '#333',
+            zIndex: (theme) => theme.zIndex.drawer + 1,
           }}
         >
-          <Toolbar />
+          <Toolbar sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <IconButton 
+              sx={{ 
+                backgroundColor: notificationsOpen ? 'rgba(15, 47, 97, 0.1)' : 'transparent',
+                borderRadius: '50%',
+                mr: 2,
+                '&:hover': { backgroundColor: 'rgba(15, 47, 97, 0.1)' }
+              }}
+              onClick={handleNotificationsClick}
+            >
+              <Badge badgeContent={unreadNotificationsCount} color="error">
+                <NotificationsIcon sx={{ color: '#0f2f61' }} />
+              </Badge>
+            </IconButton>
+            
+            {/* Popover de Notificações */}
+            <Popover
+              open={notificationsOpen}
+              anchorEl={notificationsAnchorEl}
+              onClose={handleNotificationsClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              PaperProps={{
+                sx: { 
+                  width: 320, 
+                  maxHeight: 500, 
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                  overflow: 'hidden'
+                }
+              }}
+            >
+              <Box>
+                <Tabs 
+                  value={notificationTabValue} 
+                  onChange={handleNotificationTabChange}
+                  variant="fullWidth"
+                  sx={{ borderBottom: '1px solid #eee' }}
+                >
+                  <Tab 
+                    label="To Do's" 
+                    sx={{ 
+                      textTransform: 'none', 
+                      fontWeight: 'bold',
+                      fontSize: '0.85rem' 
+                    }} 
+                  />
+                  <Tab 
+                    label="Notificações" 
+                    sx={{ 
+                      textTransform: 'none', 
+                      fontWeight: 'bold',
+                      fontSize: '0.85rem' 
+                    }} 
+                  />
+                  <Tab 
+                    label={<Avatar 
+                      src="https://via.placeholder.com/40" 
+                      alt="User" 
+                      sx={{ width: 26, height: 26 }} 
+                    />} 
+                    sx={{ minWidth: 0 }}
+                  />
+                </Tabs>
+                
+                {notificationTabValue === 1 && (
+                  <Box sx={{ maxHeight: 440, overflow: 'auto' }}>
+                    {todayNotifications.length > 0 && (
+                      <Box>
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            display: 'block', 
+                            fontWeight: 'bold', 
+                            px: 2, 
+                            py: 1, 
+                            color: '#666',
+                            backgroundColor: '#f9f9f9'
+                          }}
+                        >
+                          HOJE
+                        </Typography>
+                        {todayNotifications.map((notification) => (
+                          <Box key={notification.id} sx={{ px: 2, py: 1.5, borderBottom: '1px solid #eee' }}>
+                            <Box sx={{ display: 'flex', mb: 1 }}>
+                              {notification.type === 'success' && <CheckCircleOutlineIcon sx={{ color: '#38b73c', mr: 1 }} />}
+                              {notification.type === 'system' && <AccessTimeIcon sx={{ color: '#666', mr: 1 }} />}
+                              {notification.type === 'info' && <InfoIcon sx={{ color: '#0f2f61', mr: 1 }} />}
+                              {notification.type === 'warning' && <WarningIcon sx={{ color: '#f5b71f', mr: 1 }} />}
+                              {notification.type === 'error' && <ErrorIcon sx={{ color: '#d32f2f', mr: 1 }} />}
+                              <Typography 
+                                variant="subtitle2" 
+                                sx={{ fontWeight: 'bold', flex: 1, color: '#333' }}
+                              >
+                                {notification.title}
+                              </Typography>
+                              <IconButton 
+                                size="small" 
+                                onClick={() => deleteNotification(notification.id)}
+                                sx={{ padding: 0, color: '#999' }}
+                              >
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            </Box>
+                            <Typography variant="body2" sx={{ color: '#666', ml: 4, fontSize: '0.8rem' }}>
+                              {notification.message}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    )}
+                    {yesterdayNotifications.length > 0 && (
+                      <Box>
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            display: 'block', 
+                            fontWeight: 'bold', 
+                            px: 2, 
+                            py: 1, 
+                            color: '#666',
+                            backgroundColor: '#f9f9f9'
+                          }}
+                        >
+                          ONTEM
+                        </Typography>
+                        {yesterdayNotifications.map((notification) => (
+                          <Box key={notification.id} sx={{ px: 2, py: 1.5, borderBottom: '1px solid #eee' }}>
+                            <Box sx={{ display: 'flex', mb: 1 }}>
+                              {notification.type === 'success' && <CheckCircleOutlineIcon sx={{ color: '#38b73c', mr: 1 }} />}
+                              {notification.type === 'system' && <AccessTimeIcon sx={{ color: '#666', mr: 1 }} />}
+                              {notification.type === 'info' && <InfoIcon sx={{ color: '#0f2f61', mr: 1 }} />}
+                              {notification.type === 'warning' && <WarningIcon sx={{ color: '#f5b71f', mr: 1 }} />}
+                              {notification.type === 'error' && <ErrorIcon sx={{ color: '#d32f2f', mr: 1 }} />}
+                              <Typography 
+                                variant="subtitle2" 
+                                sx={{ fontWeight: 'bold', flex: 1, color: '#333' }}
+                              >
+                                {notification.title}
+                              </Typography>
+                              <IconButton 
+                                size="small" 
+                                onClick={() => deleteNotification(notification.id)}
+                                sx={{ padding: 0, color: '#999' }}
+                              >
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            </Box>
+                            <Typography variant="body2" sx={{ color: '#666', ml: 4, fontSize: '0.8rem' }}>
+                              {notification.message}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    )}
+                    {todayNotifications.length === 0 && yesterdayNotifications.length === 0 && (
+                      <Box sx={{ p: 3, textAlign: 'center' }}>
+                        <Typography variant="body2" sx={{ color: '#666' }}>
+                          Não há notificações no momento.
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                )}
+                
+                {notificationTabValue === 0 && (
+                  <Box sx={{ p: 2 }}>
+                    <List dense>
+                      {todos.map((todo) => (
+                        <ListItem 
+                          key={todo.id} 
+                          dense 
+                          disablePadding 
+                          secondaryAction={
+                            <Checkbox
+                              edge="end"
+                              checked={todo.completed}
+                              onChange={() => toggleTodoCompleted(todo.id)}
+                              sx={{ 
+                                color: '#ccc',
+                                '&.Mui-checked': { color: '#38b73c' },
+                              }}
+                            />
+                          }
+                        >
+                          <ListItemButton dense onClick={() => toggleTodoCompleted(todo.id)}>
+                            <ListItemText 
+                              primary={todo.text} 
+                              primaryTypographyProps={{
+                                sx: {
+                                  fontSize: '0.85rem',
+                                  textDecoration: todo.completed ? 'line-through' : 'none',
+                                  color: todo.completed ? '#999' : '#333'
+                                }
+                              }} 
+                            />
+                          </ListItemButton>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )}
+              </Box>
+            </Popover>
+          </Toolbar>
         </AppBar>
         <Drawer
           variant="permanent"
