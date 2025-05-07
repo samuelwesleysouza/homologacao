@@ -30,7 +30,14 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import BlockIcon from '@mui/icons-material/Block';
-import { DataGrid, GridColDef, GridRenderCellParams, GridColumnVisibilityModel } from '@mui/x-data-grid';
+import { 
+  DataGrid, 
+  GridColDef, 
+  GridRenderCellParams, 
+  GridColumnVisibilityModel,
+  GridToolbar,
+} from '@mui/x-data-grid';
+import { ptBR } from '@mui/x-data-grid/locales';
 
 import axios from 'axios';
 
@@ -181,11 +188,11 @@ function gerarMockFornecedores(): Fornecedor[] {
 
 const CadastroFornecedor = () => {
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>(gerarMockFornecedores());
+  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({});
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedFornecedor, setSelectedFornecedor] = useState<Fornecedor | null>(null);
   const [openEnderecoModal, setOpenEnderecoModal] = useState(false);
   const [fornecedorEndereco, setFornecedorEndereco] = useState<Fornecedor | null>(null);
-  const [columnVisibilityModel, setColumnVisibilityModel] = useState<GridColumnVisibilityModel>({ ativo: false });
   const [docsEnviados, setDocsEnviados] = useState<string[]>([]);
   const [openDocumentosModal, setOpenDocumentosModal] = useState(false);
   const [openQualificacaoModal, setOpenQualificacaoModal] = useState(false);
@@ -326,35 +333,35 @@ const CadastroFornecedor = () => {
   const handleCloseHistorico = () => setOpenHistoricoModal(false);
 
   const columns: GridColDef[] = [
-    { field: 'codigo', headerName: 'Código', width: 90, headerAlign: 'center', align: 'center', resizable: true },
-    { field: 'cpfCnpj', headerName: 'CPF / CNPJ', width: 130, headerAlign: 'center', align: 'center', resizable: true },
-    { field: 'nomeFantasia', headerName: 'Nome/Fantasia', width: 220, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'codigo', headerName: 'Código', width: 100, headerAlign: 'center', align: 'center', resizable: true, flex: 0.5 },
+    { field: 'cpfCnpj', headerName: 'CPF / CNPJ', width: 150, headerAlign: 'center', align: 'center', resizable: true, flex: 0.8 },
+    { field: 'nomeFantasia', headerName: 'Nome/Fantasia', width: 250, headerAlign: 'center', align: 'center', resizable: true, flex: 1.2, renderCell: (params) => (
       <span style={{ display: 'block', width: '100%', textAlign: 'center' }}>{params.row.nomeFantasia || params.row.nome}</span>
     ) },
-    { field: 'tipoQualificacao', headerName: 'Tipo de Qualificação', width: 180, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'tipoQualificacao', headerName: 'Tipo de Qualificação', width: 200, headerAlign: 'center', align: 'center', resizable: true, flex: 1, renderCell: (params) => (
       <span style={{ display: 'block', width: '100%', textAlign: 'center' }}>{params.row.tipoQualificacao || '-'}</span>
     ) },
-    { field: 'dataUltimaOp', headerName: 'Data Última OP', width: 150, headerAlign: 'center', align: 'center', resizable: true },
-    { field: 'status', headerName: 'Status', width: 110, headerAlign: 'center', align: 'center', resizable: true, renderCell: renderStatus },
-    { field: 'endereco', headerName: 'Endereço', width: 90, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'dataUltimaOp', headerName: 'Data Última OP', width: 160, headerAlign: 'center', align: 'center', resizable: true, flex: 0.8 },
+    { field: 'status', headerName: 'Status', width: 120, headerAlign: 'center', align: 'center', resizable: true, renderCell: renderStatus, flex: 0.6 },
+    { field: 'endereco', headerName: 'Endereço', width: 100, headerAlign: 'center', align: 'center', resizable: true, flex: 0.5, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenEndereco(params.row)}><HomeIcon /></IconButton>
     ) },
-    { field: 'anexos', headerName: 'Anexos', width: 90, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'anexos', headerName: 'Anexos', width: 100, headerAlign: 'center', align: 'center', resizable: true, flex: 0.5, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenDocumentos(params.row)}><AttachFileIcon /></IconButton>
     ) },
-    { field: 'editar', headerName: 'Editar', width: 90, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'editar', headerName: 'Editar', width: 100, headerAlign: 'center', align: 'center', resizable: true, flex: 0.5, renderCell: (params) => (
       <IconButton onClick={() => handleOpenDialog(params.row)} color="primary"><EditIcon /></IconButton>
     ) },
-    { field: 'contaBancaria', headerName: 'Conta Bancária', width: 120, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'contaBancaria', headerName: 'Conta Bancária', width: 130, headerAlign: 'center', align: 'center', resizable: true, flex: 0.7, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenConta(params.row)}><AccountBalanceIcon /></IconButton>
     ) },
-    { field: 'qualificacao', headerName: 'Qualificação', width: 120, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'qualificacao', headerName: 'Qualificação', width: 130, headerAlign: 'center', align: 'center', resizable: true, flex: 0.7, renderCell: (params) => (
       <IconButton color="primary" onClick={() => handleOpenQualificacao(params.row)}><VerifiedUserIcon /></IconButton>
     ) },
-    { field: 'historico', headerName: 'Histórico', width: 100, headerAlign: 'center', align: 'center', resizable: true, renderCell: (params) => (
+    { field: 'historico', headerName: 'Histórico', width: 110, headerAlign: 'center', align: 'center', resizable: true, flex: 0.6, renderCell: (params) => (
       <Button variant="contained" color="info" size="small" onClick={() => handleOpenHistorico(params.row)}>Histórico</Button>
     ) },
-    { field: 'departamentoResponsavel', headerName: 'Departamento', width: 140, headerAlign: 'center', align: 'center', resizable: true },
+    { field: 'departamentoResponsavel', headerName: 'Departamento', width: 150, headerAlign: 'center', align: 'center', resizable: true, flex: 0.8 },
   ];
 
   const getTipoFornecedor = (fornecedor: Fornecedor | null): TipoFornecedor => {
@@ -441,9 +448,9 @@ const CadastroFornecedor = () => {
         </Box>
         <Box sx={{
            height: 'calc(100vh - 200px)',
-           width: '99%',
+           width: '100%',
            overflow: 'visible',
-           padding: 0,
+           padding: '0 16px',
            margin: 0,
            boxSizing: 'border-box',
            position: 'relative'
@@ -457,36 +464,42 @@ const CadastroFornecedor = () => {
             autoHeight
             className={styles.dataGrid}
             density="standard"
-            disableRowSelectionOnClick
-            disableColumnMenu
-            disableAutosize
-            disableColumnResize={false}
-            disableDensitySelector
+            slots={{
+              toolbar: GridToolbar,
+            }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+                quickFilterProps: { debounceMs: 500 },
+                printOptions: { disableToolbarButton: true },
+              },
+            }}
+            filterModel={{
+              items: [],
+              quickFilterValues: [],
+            }}
+            disableColumnMenu={false}
+            disableColumnFilter={false}
+            disableDensitySelector={false}
+            disableColumnSelector={false}
+            columnResizeMode="drag"
+            disableColumnReorder={false}
             // Configuração de visibilidade das colunas
             // Para ocultar uma coluna, mude o valor para 'false'
             // Para mostrar uma coluna, mude o valor para 'true'
-            columnVisibilityModel={{
-              codigo: true,
-              cpfCnpj: true,
-              nomeFantasia: true,
-              tipoQualificacao: true,
-              dataUltimaOp: true,
-              status: true,
-              endereco: true,
-              anexos: true,
-              editar: true,
-              contaBancaria: true,
-              qualificacao: true,
-              historico: true,
-              departamentoResponsavel: true
-            }}
+            columnVisibilityModel={columnVisibilityModel}
+            onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
             slotProps={{
               footer: { className: styles['centro-paginacao'] }
             }}
             localeText={{
+              ...ptBR.components.MuiDataGrid.defaultProps.localeText,
+              toolbarFilters: 'Filtros',
+              toolbarExport: 'Exportar',
+              toolbarColumns: 'Colunas',
+              toolbarQuickFilterPlaceholder: 'Pesquisar...',
               noRowsLabel: 'Nenhum registro encontrado',
               noResultsOverlayLabel: 'Nenhum resultado encontrado.',
-              toolbarDensity: 'Densidade',
               toolbarDensityLabel: 'Densidade',
               toolbarDensityCompact: 'Compacto',
               toolbarDensityStandard: 'Padrão',
@@ -513,6 +526,8 @@ const CadastroFornecedor = () => {
               },
               '& .MuiDataGrid-root': {
                 fontSize: '0.875rem',
+                width: '100%',
+                maxWidth: '100%',
               },
               '& .MuiDataGrid-row': {
                 '&:nth-of-type(odd)': {
