@@ -180,7 +180,7 @@ function gerarMockFornecedores(): Fornecedor[] {
 }
 
 const CadastroFornecedor = () => {
-  const [fornecedores, setFornecedores] = useState<Fornecedor[]>(mockFornecedores);
+  const [fornecedores, setFornecedores] = useState<Fornecedor[]>(gerarMockFornecedores());
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedFornecedor, setSelectedFornecedor] = useState<Fornecedor | null>(null);
   const [openEnderecoModal, setOpenEnderecoModal] = useState(false);
@@ -387,16 +387,16 @@ const CadastroFornecedor = () => {
       <div className={styles.mainContent} style={{ width: '100%', padding: 0, margin: 0, zoom: '90%' }}>
         {/* Header visual moderno sem gráfico */}
         <Box sx={{
-          width: '100%',
+          width: '99%',
           background: '#fff',
-          borderRadius: 4,
+          borderRadius: 8,
           p: { xs: 2, md: 4 },
           mb: 3,
           boxShadow: '0 4px 24px 0 rgba(32, 32, 32, 0.08)',
           display: 'flex',
           alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'space-between',
-          margin: 0,
+          margin: '0 auto',
           boxSizing: 'border-box',
         }}>
           <Box>
@@ -417,6 +417,8 @@ const CadastroFornecedor = () => {
             onClick={() => handleOpenDialog()}
             sx={{
               marginBottom: 2,
+              marginLeft: 100,
+              position: 'absolute',
               backgroundColor: '#1976d2',
               '&:hover': {
                 backgroundColor: '#1565c0'
@@ -425,13 +427,13 @@ const CadastroFornecedor = () => {
           >
             Novo Fornecedor
           </Button>
-          <Box sx={{ mb: 4 }}>
-            <Typography variant="h6" sx={{ mb: 2 }}>Estatísticas de Fornecedores</Typography>
+          <Box sx={{ mb: 4, width: '40%', mx: 'auto', mt: -8, marginLeft: '35%' }}>
+            <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>Estatísticas de Fornecedores</Typography>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                 <GraficoEmpresasDonut />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                 <GraficoEmpresasBar />
               </Grid>
             </Grid>
@@ -439,7 +441,7 @@ const CadastroFornecedor = () => {
         </Box>
         <Box sx={{
            height: 'calc(100vh - 200px)',
-           width: '100%',
+           width: '99%',
            overflow: 'visible',
            padding: 0,
            margin: 0,
