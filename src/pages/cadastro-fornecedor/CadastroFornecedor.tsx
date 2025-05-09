@@ -482,16 +482,9 @@ const CadastroFornecedor = () => {
             disableColumnFilter={false}
             disableDensitySelector={false}
             disableColumnSelector={false}
-            columnResizeMode="drag"
-            disableColumnReorder={false}
-            // Configuração de visibilidade das colunas
-            // Para ocultar uma coluna, mude o valor para 'false'
-            // Para mostrar uma coluna, mude o valor para 'true'
+            disableColumnResize={false}
             columnVisibilityModel={columnVisibilityModel}
             onColumnVisibilityModelChange={(newModel) => setColumnVisibilityModel(newModel)}
-            slotProps={{
-              footer: { className: styles['centro-paginacao'] }
-            }}
             localeText={{
               ...ptBR.components.MuiDataGrid.defaultProps.localeText,
               toolbarFilters: 'Filtros',
